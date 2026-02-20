@@ -54,9 +54,7 @@ x_wave, y_wave = createSegmentsLabels(waveData, 2, SeqLen, StepSize)
 X = np.concatenate((x_idle, x_punch, x_wave))
 y = np.concatenate((y_idle, y_punch, y_wave))
 
-# --- THE FIX: Manually Flatten the Data ---
 # We turn the 3D matrix (N, 50, 6) into a 2D matrix (N, 300) here.
-# This allows us to delete the 'Flatten' layer from the model later.
 total_inputs = SeqLen * 6
 X = X.reshape(X.shape[0], total_inputs)
 
@@ -76,15 +74,12 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 print("\n--- SPLITTING DATA ---")
-# Split into training (80%) and testing (20%)
+# Split into training and testing 80 and 20
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 print("--- BUILDING MODEL ---")
 model = keras.Sequential([
     # 1. Dense Layer (The Input is merged here)
-    # We removed layers.Flatten(). 
-    # We removed layers.Input(shape=(SeqLen, 6)).
-    # We now tell it to expect a flat list of 300 numbers directly.
     layers.Dense(32, activation='relu', input_shape=(total_inputs,)),
 
     # 2. Dropout (Randomly forget data to prevent memorization)
@@ -97,8 +92,6 @@ model = keras.Sequential([
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 print("\n--- TRAINING STARTING ---")
-# This is where the learning happens. 
-# watch 'accuracy' go UP and 'loss' go DOWN.
 history = model.fit(X_train, y_train, epochs=30, batch_size=16, validation_data=(X_test, y_test))
 
 
@@ -132,7 +125,6 @@ import os
 
 # 1. READ THE BINARY FILE
 tflite_path = "gestureModel.tflite" 
-# (Make sure this matches the file name in your folder)
 
 with open(tflite_path, 'rb') as f:
     hex_data = f.read().hex()

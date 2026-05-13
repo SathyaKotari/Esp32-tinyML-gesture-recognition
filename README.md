@@ -1,26 +1,31 @@
-# Esp32-tinyML-gesture-recognition
+## Demo
+Add GIF/video of Idle, Punch, Wave classification.
 
-This project implements a gesture recognition system using **TensorFlow Lite for Microcontrollers** on an ESP32. It captures accelerometer and gyroscope data from a **GY-521 (MPU6050)** sensor to classify movements into three categories: **Idle, Punch, and Wave**.
-The goal fo the project was to be an intro to TinyML and running a project while cognizant of the hardware limitations
+## System Architecture
+MPU6050 → ESP32 firmware → preprocessing → TensorFlow Lite Micro model → gesture output
 
 ## Hardware
-ESP32 Development Board
-GY-521 (MPU6050 Accel/Gyro)
+- ESP32 development board
+- GY-521 / MPU6050 accelerometer + gyroscope
+- USB power
+- Jumper wires / breadboard
 
-## Project Structure
-* `training/`: Python scripts to train the Neural Network.
-    * `train_model.py`: Loads CSV data, trains the model, and exports `model.h`.
-    * `data/`: Contains the `.csv` datasets for Idle, Punch, and Wave.
-* `firmware/`: C++ code for the ESP32.
-    * `main.cpp`: Main Arduino sketch for inference.
-    * `model.h`: The trained model converted to a C byte array.
+## Model
+- Classes: Idle, Punch, Wave
+- Input features: accelerometer + gyroscope values
+- Training data: [number] samples per class
+- Accuracy: [add after measuring]
+- Inference latency: [add after measuring]
+- Model size: [add after measuring]
 
 ## How to Run
-##1. Collect Data (Optional)
-If you want to train your own gestures, use the sensor to log raw X/Y/Z data for Accelerometer and Gyroscope into the `training/data/` folder.
+1. Flash firmware using PlatformIO / Arduino IDE
+2. Collect sensor data
+3. Train model
+4. Convert model to `model.h`
+5. Upload inference firmware to ESP32
 
-##2. Train the Model
-Run the Python script to generate a new model
-
-##3. Run on the board
-Run the C++ program on your board
+## What I Learned
+- Sensor data quality matters more than expected
+- Embedded ML requires memory and latency tradeoffs
+- Hardware constraints change the ML workflow
